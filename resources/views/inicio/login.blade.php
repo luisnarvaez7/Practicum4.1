@@ -40,7 +40,7 @@
 
                 <!-- Sección Derecha -->
                 <div class="col-md-6 d-none d-md-block px-0">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img3.webp" 
+                    <img src="https://radioluzyvidafm.com/wp-content/uploads/2019/11/FOTO-3-800x400.jpg" 
                          alt="Imagen de inicio de sesión" class="img-fluid h-100" style="object-fit: cover; object-position: center;">
                 </div>
             </div>
