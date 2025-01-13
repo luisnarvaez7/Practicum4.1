@@ -55,6 +55,18 @@
                         <a class="nav-link" href="{{ route('doctors.index') }}">Doctors</a>
 
                     </li>
+                    
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ route('secretaria.index') }}">Secretaria</a>
+
+                    </li>
+                    
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ route('citas.index') }}">Citas</a>
+
+                    </li>
 
                 </ul>
 

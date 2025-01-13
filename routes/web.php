@@ -47,7 +47,7 @@ Route::get('/', function () {
 Route::resource('users', UserController::class);
 Route::resource('patients', PatientController::class);
 Route::resource('doctors', DoctorController::class);
-Route::resource('secretarias', SecretariaController::class);
+Route::resource('secretaria', SecretariaController::class);
 Route::resource('citas', CitaController::class);
 
 

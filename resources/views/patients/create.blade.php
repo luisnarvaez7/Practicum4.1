@@ -27,16 +27,8 @@
       <input type="number" name="edad" class="form-control" required>
     </div>
     <div class="mb-3">
-      <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-      <input type="date" name="fechaNacimiento" class="form-control" required>
-    </div>
-    <div class="mb-3">
       <label for="genero" class="form-label">Género</label>
       <input type="text" name="genero" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label for="historialMedico" class="form-label">Historial Médico</label>
-      <textarea name="historialMedico" class="form-control"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>
   </form>
