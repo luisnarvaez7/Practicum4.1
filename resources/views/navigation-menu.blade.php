@@ -28,6 +28,13 @@
     <x-nav-link href="{{ route('admin.doctors.index') }}" :active="request()->routeIs('admin.doctors.*')">
         {{ __('Manage Doctors') }}
     </x-nav-link>
+
+    <x-nav-link href="{{ route('admin.appointments.index') }}" :active="request()->routeIs('admin.appointments.*')">
+        {{ __('Manage appointments') }}
+    </x-nav-link>
+    <x-nav-link href="{{ route('admin.availability.index', ['doctor' => Auth::id()]) }}" :active="request()->routeIs('admin.availability.*')">
+        {{ __('Manage Availability') }}
+    </x-nav-link>
 </div>            </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">

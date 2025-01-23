@@ -9,9 +9,14 @@ use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::all();
+    public function index(Request $request) {
+        $search = $request->input('search');
+        $users = User::with('roles')
+                     ->when($search, function ($query, $search) {
+                         return $query->where('name', 'like', "%{$search}%");
+                     })
+                     ->paginate(10);
+
         $roles = Role::all();
         return view('users.index', compact('users', 'roles'));
     }

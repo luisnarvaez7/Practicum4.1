@@ -13,9 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RolesSeeder::class);
-        $this->call(PermissionsSeeder::class);
-        $this->call(SpecializationsSeeder::class);
+        $this->call([
+            RolesSeeder::class,
+            PermissionsSeeder::class,
+            SpecializationsSeeder::class,
+            UserSeeder::class,
+            DoctorSpecializationSeeder::class,
+            AvailabilitySeeder::class,
+            AppointmentSeeder::class,
+        ]);
         // Crear usuario admin si no existe
         $admin = User::firstOrCreate(
             ['email' => 'admin@example.com'],

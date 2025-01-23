@@ -29,7 +29,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -61,5 +63,20 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
-
+    public function specializations()
+    {
+        return $this->belongsToMany(Specialization::class);
+    }
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+    public function contacts()
+    {
+        return $this->belongsToMany(User::class, 'contacts', 'user_id', 'contact_user_id');
+    }
+    public function availabilities()
+    {
+        return $this->hasMany(Availability::class, 'doctor_id');
+    }
 }

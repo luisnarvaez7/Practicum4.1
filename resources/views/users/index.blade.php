@@ -8,6 +8,18 @@
     <div class="container mx-auto py-12" x-data="userData()" @keydown.escape.window="closeModal()">
         <h1 class="text-2xl font-bold mb-6">Manage Users</h1>
 
+        <!-- Filtros y búsqueda -->
+        <div class="mb-6 flex items-center">
+            <input type="text" x-model="search" placeholder="Search users..." class="border-gray-300 rounded mr-4">
+            <select x-model="selectedRole" class="border-gray-300 rounded mr-4">
+                <option value="">{{ __('All Roles') }}</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                @endforeach
+            </select>
+            <button @click="applyFilters" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Apply</button>
+        </div>
+
         <!-- Botón para abrir el modal -->
         <button @click="openModal(false)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6">Create New User</button>
 
@@ -46,6 +58,11 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="mt-4">
+            {{ $users->links() }}
         </div>
 
         <!-- Modal -->
@@ -109,6 +126,7 @@
                 },
                 errors: {},
                 search: '',
+                selectedRole: '',
                 roles: @json($roles->toArray()),  // Asumiendo roles como objetos completos
                 filteredRoles: [],
                 openModal(edit = false, userId = null, userRoles = []) {
@@ -159,6 +177,13 @@
                 },
                 removeRole(index) {
                     this.form.roles.splice(index, 1);
+                },
+                applyFilters() {
+                    const params = new URLSearchParams({
+                        search: this.search,
+                        role: this.selectedRole,
+                    });
+                    window.location.href = `?${params.toString()}`;
                 }
             };
         }

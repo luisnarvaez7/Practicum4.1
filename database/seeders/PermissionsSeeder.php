@@ -12,7 +12,7 @@ class PermissionsSeeder extends Seeder
     {
         // Crear permisos
         $permissions = [
-            ['name'=>'view roles', 'description'=>' ver roles'],
+            ['name'=>'view roles', 'description'=>'ver roles'],
             ['name'=>'create roles', 'description'=>'crear roles'],
             ['name'=>'edit roles', 'description'=>'editar roles'],
             ['name'=>'delete roles', 'description'=>'eliminar roles'],
