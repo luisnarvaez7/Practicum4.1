@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <title>Laravel</title>
+        <title>Hospital Isidro Ayora de Loja</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -23,10 +23,13 @@
                 max-width: 1200px;
                 margin: 0 auto;
                 padding: 2rem;
+                position: relative;
+                z-index: 1;
             }
             .header {
                 text-align: center;
                 margin-bottom: 2rem;
+                color: #fff;
             }
             .header h1 {
                 font-size: 2.5rem;
@@ -36,7 +39,7 @@
                 text-align: center;
                 margin-bottom: 2rem;
                 font-size: 1.25rem;
-                color: #4b5563;
+                color: #d1d5db;
             }
             .services {
                 display: flex;
@@ -60,16 +63,38 @@
                 font-size: 1rem;
                 color: #6b7280;
             }
+            .background-image {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url('/images/hospital-isidro-ayora.jpg') no-repeat center center;
+                background-size: cover;
+                z-index: 0;
+                opacity: 0.5;
+            }
+            .background-gradient {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+                z-index: 0;
+            }
         </style>
     </head>
     <body class="antialiased">
-        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 selection:bg-red-500 selection:text-white">
+        <div class="background-image"></div>
+        <div class="background-gradient"></div>
+        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen selection:bg-red-500 selection:text-white">
             @if (Route::has('login'))
                 <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
+                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-200 hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+                        <a href="{{ route('login') }}" class="font-semibold text-gray-200 hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
 
                     @endauth
                 </div>
@@ -78,10 +103,10 @@
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="container">
                     <div class="header">
-                        <h1>Centro Médico</h1>
+                        <h1>Hospital Isidro Ayora de Loja</h1>
                     </div>
                     <div class="description">
-                        <p>Bienvenido al portal del Centro Médico. Ofrecemos una amplia gama de servicios para cuidar de su salud.</p>
+                        <p>Bienvenido al portal del Hospital Isidro Ayora de Loja. Ofrecemos una amplia gama de servicios para cuidar de su salud.</p>
                     </div>
                     <div class="services">
                         <div class="service">

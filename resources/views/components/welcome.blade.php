@@ -1,7 +1,7 @@
 <div class="p-6 lg:p-8 bg-blue-100 border-b border-blue-300">
     <div class="flex items-center space-x-4">
-        <img src="/images/hospital-logo.png" alt="Hospital Logo" class="h-12 w-12">
-        <h1 class="text-3xl font-bold text-blue-900">¡Bienvenido al Sistema Hospitalario!</h1>
+        <img src="/images/hospital-isidro-ayora.jpg" alt="Hospital Logo" class="h-12 w-12">
+        <h1 class="text-3xl font-bold text-blue-900">¡Bienvenido al Hospital Isidro Ayora de Loja!</h1>
     </div>
 
     <p class="mt-6 text-blue-700 leading-relaxed">

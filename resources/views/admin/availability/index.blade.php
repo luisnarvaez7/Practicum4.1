@@ -11,7 +11,7 @@
             <thead>
                 <tr class="bg-gray-200 text-gray-700">
                     <th class="px-4 py-2">doctor</th>
-                    <th class="px-4 py-2">Fecha</th>
+                    <th class="px-4 py-2">Día de la Semana</th>
                     <th class="px-4 py-2">Hora de Inicio</th>
                     <th class="px-4 py-2">Hora de Fin</th>
                     <th class="px-4 py-2">Acciones</th>
@@ -21,7 +21,7 @@
                 @foreach($availabilities as $availability)
                 <tr class="border-b">
                     <td class="px-4 py-2">{{ $availability->doctor->name }}</td>
-                    <td class="px-4 py-2">{{ $availability->date }}</td>
+                    <td class="px-4 py-2">{{ ucfirst($availability->day_of_week) }}</td>
                     <td class="px-4 py-2">{{ $availability->start_time }}</td>
                     <td class="px-4 py-2">{{ $availability->end_time }}</td>
                     <td class="px-4 py-2">

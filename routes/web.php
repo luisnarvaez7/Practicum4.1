@@ -11,6 +11,10 @@ use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AppointmentStatsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmergencyServiceController;
+use App\Http\Controllers\LaboratoryServiceController;
+use App\Http\Controllers\PharmacyServiceController;
+use App\Http\Controllers\MedicalRecordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +30,10 @@ use App\Http\Controllers\DashboardController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
 Route::middleware([
     'auth:sanctum',
@@ -76,11 +84,13 @@ Route::middleware([
         Route::get('/admin/assign-role', [RoleController::class, 'assign'])->name('admin.assign-role');
         Route::post('/admin/assign-role', [RoleController::class, 'storeAssignment'])->name('admin.assign-role.store');
 
+        // Routes for managing medical records
+        Route::resource('/admin/medical_records', MedicalRecordController::class)->names('admin.medical_records');
     });
 
     // Routes for managing availability
     Route::middleware(['role:admin|doctor'])->group(function () {
-        Route::get('/admin/availability/{doctor}', [AvailabilityController::class, 'index'])->name('admin.availability.index');
+        Route::get('/admin/availability', [AvailabilityController::class, 'index'])->name('admin.availability.index');
         Route::post('/admin/availability', [AvailabilityController::class, 'store'])->name('admin.availability.store');
         Route::put('/admin/availability/{id}', [AvailabilityController::class, 'update'])->name('admin.availability.update');
         Route::delete('/admin/availability/{id}', [AvailabilityController::class, 'destroy'])->name('admin.availability.destroy');
@@ -114,6 +124,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('rooms', RoomController::class)->only(['index', 'show']);
     Route::resource('roles', RoleController::class)->only(['index']);
     Route::get('/appointment-stats', [AppointmentStatsController::class, 'index'])->name('appointment.stats');
+
+    // Rutas para servicios
+    Route::get('services/emergency', [EmergencyServiceController::class, 'index'])->name('services.emergency');
+    Route::get('services/laboratory', [LaboratoryServiceController::class, 'index'])->name('services.laboratory');
+    Route::get('services/pharmacy', [PharmacyServiceController::class, 'index'])->name('services.pharmacy');
+
+    // Routes for managing medical records
+    Route::resource('medical_records', MedicalRecordController::class);
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {

@@ -31,7 +31,8 @@ class AppointmentController extends Controller
 
     public function create()
     {
-        return view('appointments.create');
+        $specializations = Specialization::all();
+        return view('appointments.create', compact('specializations'));
     }
 
     public function store(Request $request)
