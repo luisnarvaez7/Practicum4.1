@@ -17,7 +17,7 @@
                 <thead>
                     <tr>
                         <th class="py-2 px-4 border-b">ID</th>
-                        <th class="py-2 px-4 border-b">Doctor</th>
+                        <th class="py-2 px-4 border-b">doctor</th>
                         <th class="py-2 px-4 border-b">Patient</th>
                         <th class="py-2 px-4 border-b">Date</th>
                         <th class="py-2 px-4 border-b">Start Time</th>
@@ -61,13 +61,26 @@
                 <h2 class="text-xl font-semibold mb-4" x-text="isEdit ? 'Edit Appointment' : 'Create New Appointment'"></h2>
                 <form @submit.prevent="saveAppointment">
                     <div class="mb-4">
-                        <label for="doctor_id" class="block text-gray-700">Doctor</label>
-                        <select id="doctor_id" x-model="form.doctor_id" class="w-full border-gray-300 rounded mt-1" required>
-                            <option value="">{{ __('Select Doctor') }}</option>
-                            @foreach($doctors as $doctor)
-                                <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                        <label for="specialization_id" class="block text-gray-700">Specialization</label>
+                        <select id="specialization_id" x-model="form.specialization_id" @change="fetchDoctors" class="w-full border-gray-300 rounded mt-1" required>
+                            <option value="">{{ __('Select Specialization') }}</option>
+                            @foreach($specializations as $specialization)
+                                <option value="{{ $specialization->id }}">{{ $specialization->name }}</option>
                             @endforeach
                         </select>
+                        <p x-text="errors.specialization_id" class="text-red-500 text-sm"></p>
+                    </div>
+                    <div class="mb-4">
+                        <label for="doctor_id" class="block text-gray-700">doctor</label>
+                        <input type="text" id="doctor_search" x-model="doctorSearch" @input.debounce.500ms="filterDoctors" placeholder="Search doctors" class="w-full border-gray-300 rounded mt-1" :disabled="!form.specialization_id" @focus="showDropdown = true" @blur="hideDropdown">
+                        <div class="relative">
+                            <ul x-show="filteredDoctors.length > 0" class="absolute z-10 bg-white border border-gray-300 mt-1 w-full max-h-40 overflow-y-auto">
+                                <template x-for="doctor in filteredDoctors" :key="doctor.id">
+                                    <li @click="selectDoctor(doctor)" class="cursor-pointer px-4 py-2 hover:bg-gray-200" x-text="doctor.name"></li>
+                                </template>
+                            </ul>
+                        </div>
+                        <input type="hidden" id="doctor_id" x-model="form.doctor_id">
                         <p x-text="errors.doctor_id" class="text-red-500 text-sm"></p>
                     </div>
                     <div class="mb-4">
@@ -114,8 +127,10 @@
             return {
                 showModal: false,
                 isEdit: false,
+                showDropdown: false,
                 form: {
                     id: null,
+                    specialization_id: '',
                     doctor_id: '',
                     availability_id: '',
                     appointment_date: '',
@@ -124,6 +139,8 @@
                     notes: '',
                 },
                 errors: {},
+                doctorSearch: '',
+                filteredDoctors: [],
                 availabilities: [],
                 openModal(edit = false, appointmentId = null) {
                     this.isEdit = edit;
@@ -133,6 +150,7 @@
                             .then(data => {
                                 this.form = {
                                     id: data.id,
+                                    specialization_id: data.specialization_id,
                                     doctor_id: data.doctor_id,
                                     availability_id: data.availability_id,
                                     appointment_date: data.appointment_date,
@@ -144,6 +162,7 @@
                     } else {
                         this.form = {
                             id: null,
+                            specialization_id: '',
                             doctor_id: '',
                             availability_id: '',
                             appointment_date: '',
@@ -157,7 +176,8 @@
                 },
                 closeModal() {
                     this.showModal = false;
-                    this.form = { id: null, doctor_id: '', availability_id: '', appointment_date: '', start_time: '', end_time: '', notes: '' };
+                    this.showDropdown = false;
+                    this.form = { id: null, specialization_id: '', doctor_id: '', availability_id: '', appointment_date: '', start_time: '', end_time: '', notes: '' };
                     this.errors = {};
                 },
                 saveAppointment() {
@@ -181,12 +201,45 @@
                             this.errors = error.errors || {};
                         });
                 },
+                fetchDoctors() {
+                    fetch(`/doctors?specialization_id=${this.form.specialization_id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.filteredDoctors = data;
+                        });
+                },
+                filterDoctors() {
+                    if (this.doctorSearch.length > 2) {
+                        let url = `/doctors/search?query=${this.doctorSearch}`;
+                        if (this.form.specialization_id) {
+                            url += `&specialization_id=${this.form.specialization_id}`;
+                        }
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                this.filteredDoctors = data;
+                            });
+                    } else {
+                        this.filteredDoctors = [];
+                    }
+                },
+                selectDoctor(doctor) {
+                    this.form.doctor_id = doctor.id;
+                    this.doctorSearch = doctor.name;
+                    this.filteredDoctors = [];
+                    this.fetchAvailabilities();
+                },
                 fetchAvailabilities() {
                     fetch(`/admin/availability/${this.form.doctor_id}`)
                         .then(response => response.json())
                         .then(data => {
                             this.availabilities = data;
                         });
+                },
+                hideDropdown() {
+                    setTimeout(() => {
+                        this.showDropdown = false;
+                    }, 200);
                 }
             };
         }

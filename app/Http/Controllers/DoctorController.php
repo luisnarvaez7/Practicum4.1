@@ -2,113 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\doctor;
+use App\BusinessLogic\Services\DoctorService;
 use App\Models\User;
-use App\Models\Specialization;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Specialization;
 
 class DoctorController extends Controller
 {
-    public function __construct()
+    protected $doctorService;
+
+    public function __construct(DoctorService $doctorService)
     {
-        $this->middleware('role:Admin')->only(['index', 'store', 'update', 'destroy']);
+        $this->doctorService = $doctorService;
     }
 
-    // Listar todos los doctores con filtros, búsqueda y paginación
     public function index(Request $request)
     {
-        $query = User::role('doctor')->with('specializations');
-
-        // Filtros
-        if ($request->filled('specialization')) {
-            $query->whereHas('specializations', function ($q) use ($request) {
-                $q->where('specialization_id', $request->specialization);
-            });
-        }
-
-        // Búsqueda
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        // Paginación
-        $doctors = $query->paginate(10);
-
         $specializations = Specialization::all();
+
+        if ($request->has('specialization_id')) {
+            $doctors = $this->doctorService->getDoctorsBySpecialization($request->specialization_id);
+            return response()->json($doctors);
+        }
+
+        $doctors = $this->doctorService->getAllDoctors($request);
         return view('doctors.index', compact('doctors', 'specializations'));
     }
 
-    // Crear un nuevo doctor
+    public function show($id)
+    {
+        return response()->json($this->doctorService->getDoctorById($id));
+    }
+
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'specializations' => 'array',
-            'specializations.*' => 'exists:specializations,id',
-        ]);
-
-        DB::transaction(function () use ($validated) {
-            $doctor = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-            ]);
-
-            $doctor->assignRole('doctor');
-
-            // Filtrar solo los IDs de especialización y sincronizarlos (sin la descripción)
-            $specializations = Arr::pluck($validated['specializations'], 'id'); // Solo obtener los IDs
-            $doctor->specializations()->sync($specializations);
-        });
-
-        return response()->json(['message' => 'Doctor creado con éxito'], 201);
+        $doctor = $this->doctorService->createDoctor($request);
+        return response()->json($doctor, 201);
     }
 
-    // Actualizar un doctor
     public function update(Request $request, $id)
     {
-        $doctor = User::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $doctor->id,
-            'password' => 'sometimes|nullable|string|min:8',
-            'specializations' => 'array',
-            'specializations.*' => 'exists:specializations,id',
-        ]);
-
-        DB::transaction(function () use ($validated, $doctor) {
-            $doctor->update([
-                'name' => $validated['name'] ?? $doctor->name,
-                'email' => $validated['email'] ?? $doctor->email,
-                'password' => isset($validated['password']) ? Hash::make($validated['password']) : $doctor->password,
-            ]);
-
-            // Filtrar solo los IDs de especialización y sincronizarlos (sin la descripción)
-            $specializations = Arr::pluck($validated['specializations'], 'id'); // Solo obtener los IDs
-            $doctor->specializations()->sync($specializations);
-        });
-
-        return response()->json(['message' => 'Doctor actualizado con éxito'], 200);
+        $doctor = $this->doctorService->updateDoctor($id, $request);
+        return response()->json($doctor);
     }
 
-    // Eliminar un doctor
     public function destroy($id)
     {
-        $doctor = User::findOrFail($id);
+        $this->doctorService->deleteDoctor($id);
+        return response()->json(null, 204);
+    }
 
-        DB::transaction(function () use ($doctor) {
-            $doctor->specializations()->detach();
-            $doctor->delete();
-        });
-
-        return response()->json(['message' => 'Doctor eliminado con éxito'], 200);
+    public function search(Request $request)
+    {
+        try {
+            $query = $request->input('query');
+            $doctors = User::where('name', 'LIKE', "%{$query}%")->paginate(5);
+            return response()->json($doctors);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al buscar doctores', 'error' => $e->getMessage()], 500);
+        }
     }
 }

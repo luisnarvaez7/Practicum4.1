@@ -9,7 +9,7 @@
         <form action="{{ route('admin.availability.store') }}" method="POST" class="bg-white shadow-md rounded-lg p-6">
             @csrf
             <div class="form-group mb-4">
-                <label for="doctor_id" class="block text-gray-700 font-bold mb-2">Doctor</label>
+                <label for="doctor_id" class="block text-gray-700 font-bold mb-2">doctor</label>
                 <select name="doctor_id" id="doctor_id" class="form-control w-full border border-gray-300 rounded-lg p-2">
                     @foreach($doctors as $doctor)
                     <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>

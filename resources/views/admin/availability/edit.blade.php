@@ -10,7 +10,7 @@
             @csrf
             @method('PUT')
             <div class="form-group mb-4">
-                <label for="doctor_id" class="block text-gray-700 font-bold mb-2">Doctor</label>
+                <label for="doctor_id" class="block text-gray-700 font-bold mb-2">doctor</label>
                 <select name="doctor_id" id="doctor_id" class="form-control w-full border border-gray-300 rounded-lg p-2">
                     @foreach($doctors as $doctor)
                     <option value="{{ $doctor->id }}" {{ $doctor->id == $availability->doctor_id ? 'selected' : '' }}>{{ $doctor->name }}</option>

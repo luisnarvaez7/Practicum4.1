@@ -12,10 +12,11 @@ class AppointmentFactory extends Factory
     public function definition()
     {
         return [
+
             'doctor_id' => \App\Models\User::factory(),
             'patient_id' => \App\Models\User::factory(),
             'appointment_date' => $this->faker->dateTime,
-            'status' => $this->faker->randomElement(['scheduled', 'completed', 'cancelled']),
+            'status' => $this->faker->randomElement(['completed', 'cancelled', 'pending']),
             'notes' => $this->faker->sentence,
         ];
     }

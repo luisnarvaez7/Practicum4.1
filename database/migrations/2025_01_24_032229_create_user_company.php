@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contacts', function (Blueprint $table) {
+        Schema::create('user_company', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('contact_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->string('role')->nullable(); // Ej. admin, manager, employee
             $table->timestamps();
 
-            $table->unique(['user_id', 'contact_user_id']);  // Para evitar duplicados
+            $table->unique(['user_id', 'company_id']);
         });
-        //
     }
 
     /**
@@ -27,7 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contacts');
-        //
+        Schema::dropIfExists('user_company');
     }
 };

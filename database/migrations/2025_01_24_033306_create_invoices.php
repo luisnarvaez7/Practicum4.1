@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('specialization_user', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('specialization_id')->constrained()->onDelete('cascade');
+            $table->foreignId('appointment_id')->constrained('appointments')->onDelete('cascade');
+            $table->decimal('amount', 10, 2);
+            $table->string('payment_method');
+            $table->enum('status', ['paid', 'unpaid', 'cancelled'])->default('unpaid');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('specialization_user');
+        Schema::dropIfExists('invoices');
     }
 };

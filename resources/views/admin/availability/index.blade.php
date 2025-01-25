@@ -10,7 +10,7 @@
         <table class="table-auto w-full bg-white shadow-md rounded-lg">
             <thead>
                 <tr class="bg-gray-200 text-gray-700">
-                    <th class="px-4 py-2">Doctor</th>
+                    <th class="px-4 py-2">doctor</th>
                     <th class="px-4 py-2">Fecha</th>
                     <th class="px-4 py-2">Hora de Inicio</th>
                     <th class="px-4 py-2">Hora de Fin</th>

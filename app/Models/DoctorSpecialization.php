@@ -9,10 +9,7 @@ class DoctorSpecialization extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'doctor_id',
-        'specialization_id',
-    ];
+    protected $fillable = ['doctor_id', 'specialization_id'];
 
     public function doctor()
     {
@@ -21,6 +18,6 @@ class DoctorSpecialization extends Model
 
     public function specialization()
     {
-        return $this->belongsTo(Specialization::class, 'specialization_id');
+        return $this->belongsTo(Specialization::class);
     }
 }

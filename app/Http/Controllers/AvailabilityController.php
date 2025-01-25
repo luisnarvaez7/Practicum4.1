@@ -11,7 +11,7 @@ class AvailabilityController extends Controller
     // Listar disponibilidad de doctores
     public function index()
     {
-        $availabilities = Availability::paginate(10); // Cambiado para agregar paginación
+        $availabilities = Availability::paginate(5); // Cambiado para agregar paginación
         return view('admin.availability.index', compact('availabilities'));
     }
 
@@ -33,7 +33,7 @@ class AvailabilityController extends Controller
     public function create()
     {
         $doctors = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Doctor');
+            $query->where('name', 'doctor');
         })->get();
 
         return view('admin.availability.create', compact('doctors'));
@@ -44,7 +44,7 @@ class AvailabilityController extends Controller
     {
         $availability = Availability::findOrFail($id);
         $doctors = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Doctor');
+            $query->where('name', 'doctor');
         })->get();
 
         return view('admin.availability.edit', compact('availability', 'doctors'));

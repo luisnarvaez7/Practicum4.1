@@ -65,7 +65,7 @@ class User extends Authenticatable
     ];
     public function specializations()
     {
-        return $this->belongsToMany(Specialization::class);
+        return $this->belongsToMany(Specialization::class, 'doctor_specialization', 'doctor_id', 'specialization_id');
     }
     public function profile()
     {
@@ -78,5 +78,21 @@ class User extends Authenticatable
     public function availabilities()
     {
         return $this->hasMany(Availability::class, 'doctor_id');
+    }
+    public function medicalHistories()
+    {
+        return $this->hasMany(MedicalHistory::class, 'patient_id');
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'patient_id');
+    }
+    public function appointmentsAsDoctor()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
+    public function appointmentsAsPatient()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id');
     }
 }

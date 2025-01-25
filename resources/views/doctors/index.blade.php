@@ -21,7 +21,7 @@
         </div>
 
         <!-- Botón para abrir el modal -->
-        <button @click="openModal(false)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6">Create New Doctor</button>
+        <button @click="openModal(false)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6">Create New doctor</button>
 
         <!-- Tabla de médicos -->
         <div class="overflow-x-auto">
@@ -68,7 +68,7 @@
         <!-- Modal -->
         <div x-show="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75" style="display: none;">
             <div class="bg-white p-6 rounded shadow-md w-full max-w-lg" @click.away="closeModal()">
-                <h2 class="text-xl font-semibold mb-4" x-text="isEdit ? 'Edit Doctor' : 'Create New Doctor'"></h2>
+                <h2 class="text-xl font-semibold mb-4" x-text="isEdit ? 'Edit doctor' : 'Create New doctor'"></h2>
                 <form @submit.prevent="saveDoctor">
                     <div class="mb-4">
                         <label for="name" class="block text-gray-700">Name</label>
@@ -159,7 +159,7 @@
                             if (!response.ok) {
                                 return response.json().then(data => { throw data; });
                             }
-                            console.log('Doctor saved successfully:', this.form);
+                            console.log('doctor saved successfully:', this.form);
                             this.closeModal();
                             location.reload(); // Recarga para reflejar cambios
                         })

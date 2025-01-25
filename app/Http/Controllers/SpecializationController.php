@@ -12,7 +12,7 @@ class SpecializationController extends Controller
     public function index()
     {
         $specializations = Specialization::all();
-        return response()->json($specializations, 200);
+        return view('specializations.index', compact('specializations'));
     }
 
     // Asociar especialidades a un doctor

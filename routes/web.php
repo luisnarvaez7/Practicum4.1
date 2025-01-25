@@ -6,6 +6,11 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AvailabilityController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\AppointmentStatsController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +36,8 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    // Admin Routes for User and Role Management
-    Route::middleware(['role:Admin'])->group(function () {
+    // admin Routes for User and Role Management
+    Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
         Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
         Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
@@ -49,12 +54,8 @@ Route::middleware([
         Route::delete('/admin/patients/{patient}', [UserController::class, 'destroyPatient'])->name('admin.patients.destroy');
 
         // Routes for managing doctors
-        Route::get('/admin/doctors', [UserController::class, 'indexDoctors'])->name('admin.doctors.index');
-        Route::get('/admin/doctors/create', [UserController::class, 'createDoctor'])->name('admin.doctors.create');
-        Route::post('/admin/doctors', [UserController::class, 'storeDoctor'])->name('admin.doctors.store');
-        Route::get('/admin/doctors/{doctor}/edit', [UserController::class, 'editDoctor'])->name('admin.doctors.edit');
-        Route::put('/admin/doctors/{doctor}', [UserController::class, 'updateDoctor'])->name('admin.doctors.update');
-        Route::delete('/admin/doctors/{doctor}', [UserController::class, 'destroyDoctor'])->name('admin.doctors.destroy');
+        Route::resource('/admin/doctors', DoctorController::class)->names('admin.doctors');
+
 
         // Routes for managing appointments
         Route::get('/admin/appointments', [AppointmentController::class, 'index'])->name('admin.appointments.index');
@@ -74,31 +75,50 @@ Route::middleware([
 
         Route::get('/admin/assign-role', [RoleController::class, 'assign'])->name('admin.assign-role');
         Route::post('/admin/assign-role', [RoleController::class, 'storeAssignment'])->name('admin.assign-role.store');
-    });
 
-    // Routes for managing appointments
-    Route::middleware(['role:Admin|Doctor'])->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('appointments', AppointmentController::class);
-    });
-    Route::middleware(['role:Admin|Doctor'])->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('doctors', DoctorController::class);
     });
 
     // Routes for managing availability
-    Route::middleware(['role:Admin|Doctor'])->group(function () {
+    Route::middleware(['role:admin|doctor'])->group(function () {
         Route::get('/admin/availability/{doctor}', [AvailabilityController::class, 'index'])->name('admin.availability.index');
         Route::post('/admin/availability', [AvailabilityController::class, 'store'])->name('admin.availability.store');
         Route::put('/admin/availability/{id}', [AvailabilityController::class, 'update'])->name('admin.availability.update');
         Route::delete('/admin/availability/{id}', [AvailabilityController::class, 'destroy'])->name('admin.availability.destroy');
-        Route::get('/admin/availability', [AvailabilityController::class, 'index'])->name('admin.availability.index');
         Route::get('/admin/availability/create', [AvailabilityController::class, 'create'])->name('admin.availability.create');
-        Route::post('/admin/availability', [AvailabilityController::class, 'store'])->name('admin.availability.store');
         Route::get('/admin/availability/{id}/edit', [AvailabilityController::class, 'edit'])->name('admin.availability.edit');
-        Route::put('/admin/availability/{id}', [AvailabilityController::class, 'update'])->name('admin.availability.update');
-        Route::delete('/admin/availability/{id}', [AvailabilityController::class, 'destroy'])->name('admin.availability.destroy');
     });
+
+    // Routes for managing patients
+    Route::middleware(['role:admin|doctor'])->group(function () {
+        Route::get('/admin/patients', [PatientController::class, 'index'])->name('admin.patients.index');
+        Route::get('/admin/patients/create', [PatientController::class, 'create'])->name('admin.patients.create');
+        Route::post('/admin/patients', [PatientController::class, 'store'])->name('admin.patients.store');
+        Route::get('/admin/patients/{patient}/edit', [PatientController::class, 'edit'])->name('admin.patients.edit');
+        Route::put('/admin/patients/{patient}', [PatientController::class, 'update'])->name('admin.patients.update');
+        Route::delete('/admin/patients/{patient}', [PatientController::class, 'destroy'])->name('admin.patients.destroy');
+    });
+
+    // Eliminamos las rutas duplicadas
+    // Route::middleware(['role:admin|doctor'])->prefix('admin')->name('admin.')->group(function () {
+    //     Route::resource('appointments', AppointmentController::class);
+    //     Route::resource('doctors', DoctorController::class);
+    //     Route::get('doctors/search', [DoctorController::class, 'search'])->name('doctors.search'); // Nueva ruta para búsqueda de doctores
+    // });
 });
 
+// Nueva ruta para búsqueda de doctores disponible para todos los usuarios autenticados
 Route::middleware(['auth'])->group(function () {
+    Route::get('doctors/search', [DoctorController::class, 'search'])->name('doctors.search');
     Route::resource('appointments', AppointmentController::class);
+    Route::resource('specializations', SpecializationController::class)->only(['index']);
+    Route::resource('rooms', RoomController::class)->only(['index', 'show']);
+    Route::resource('roles', RoleController::class)->only(['index']);
+    Route::get('/appointment-stats', [AppointmentStatsController::class, 'index'])->name('appointment.stats');
 });
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('doctors', DoctorController::class)->except(['create', 'edit']);
+});
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

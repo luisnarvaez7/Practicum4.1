@@ -8,6 +8,6 @@ class AvailabilitySeeder extends Seeder
 {
     public function run()
     {
-        Availability::factory(10)->create();
+        Availability::factory()->count(10)->create();
     }
 }
